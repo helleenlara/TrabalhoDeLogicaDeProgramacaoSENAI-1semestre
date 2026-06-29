@@ -1,1 +1,1 @@
-# Trabalho-De-L-gica-de-Programa-o-SENAI---1-semestre
+# Trabalho De Lógica de Programaoção-SENAI - 1 semestre
