@@ -1,26 +1,18 @@
-# ============================================
-# Jogo da Forca
+# SENAI BAHIA - Dendezeiros
+# Curso: Técnico em Desenvolvimento de Sistemas
 # Disciplina: Lógica de Programação
-# Grupo: [Nome 1], [Nome 2], [Nome 3], [Nome 4]
-# Turma: [turma] | Data: [data de entrega]
-# ============================================
+# Docente: Lucas Almeida
+# Turma: 103513 | Data: 06/07/2026
+# Grupo: Ana Beatriz Bispo, Lara Hellen Marques, Micaela Oliveira , Rafaela Lembrança
 
 
-# ============================================
-# PESSOA 1 — Lista de palavras e sorteio
-# ============================================
+# ----------JOGO DA FORCA----------
 
-# Importa o módulo de sorteio do Python
 import random
 
-# Cria a lista com todas as palavras possíveis do jogo
 palavras = ['borboleta', 'chocolate', 'computador', 'cachorro', 'floresta', 'montanha', 'guitarra', 'celular', 'planeta', 'futebol', 'cozinha', 'viagem', 'oceano', 'monitor', 'diamante']
 
-# Sorteia uma palavra aleatória da lista e guarda em palavra_secreta
-
-sorteio = random.choice(palavras)
-
-print(sorteio)
+palavra_secreta = random.choice(palavras)
 
 # ============================================
 # PESSOA 4 — Exibição: criação do progresso e das listas
@@ -85,60 +77,39 @@ print(sorteio)
 # PESSOA 2 — Configuração do loop
 # ============================================
 
-# Define o número máximo de tentativas (erros permitidos = 6)
+max_tentativas = 6
+tentativas_restantes = max_tentativas
 
-# Cria a variável que vai diminuindo conforme o jogador erra
+while tentativas_restantes > 0 and "_" in progresso:
 
+    exibir_jogo(progresso, letras_usadas, tentativas_restantes)
 
+    letra = input("Digite uma letra: ").lower()
 
-# ============================================
-# PESSOA 2 — Loop principal do jogo
-# ============================================
-
-# Inicia o loop que mantém o jogo rodando
-# Condição: ainda tem tentativas E ainda tem _ no progresso
-# (quando qualquer uma dessas condições for falsa, o loop para)
-
-    # ---- PESSOA 4 ----
+    # ---- PESSOA 3 ----
     # Chama a função que exibe o estado atual do jogo
 
-    # ---- PESSOA 2 ----
-    # Pede que o jogador digite uma letra
-    # (use .lower() para converter para minúsculo)
+    if len(letra) != 1 or not letra.isalpha():
+        print("Digite apenas uma letra!")
 
-    # ---- PESSOA 3 — Validação 1: entrada inválida ----
-    # Verifica se o jogador digitou exatamente uma letra
-    # (usa len() para checar o tamanho e .isalpha() para checar se é letra)
-    # Se inválido: avisa e volta para o início do loop (continue)
+    elif letra in letras_usadas:
+        print("Você já usou essa letra! Tente outra.")
 
-    # ---- PESSOA 3 — Validação 2: letra já usada ----
-    # Verifica se a letra digitada já está na lista letras_usadas
-    # Se sim: avisa e volta para o início do loop (continue)
+    else:
+        letras_usadas.append(letra)
+        if letra in palavra_secreta:
+            print("Boa! Essa letra está na palavra!")
+            atualizar_progresso(palavra_secreta, letra, progresso)  # Pessoa 4
+        else:
+            print("Essa letra não está na palavra.")
+            tentativas_restantes -= 1
 
-    # ---- PESSOA 3 — Processamento: letra válida e nova ----
-    # Adiciona a letra na lista de letras_usadas
-
-        # ---- PESSOA 3 ----
-        # Se a letra estiver na palavra_secreta:
-        # mostra mensagem de acerto e chama atualizar_progresso()
-
-        # ---- PESSOA 2 ----
-        # Se a letra NÃO estiver na palavra_secreta:
-        # mostra mensagem de erro e diminui tentativas_restantes em 1
-
-
-# ============================================
-# PESSOA 2 — Resultado final do jogo
-# ============================================
-
-# Depois que o loop terminar, verifica o resultado:
-
-    # Se não tiver mais _ no progresso: o jogador ganhou
-    # Mostra mensagem de parabéns
-
-    # Se ainda tiver _: o jogador perdeu (tentativas acabaram)
-    # Mostra mensagem de derrota e revela a palavra_secreta
-
+# ---- PESSOA 2 ----           
+ 
+if "_" not in progresso:
+    print("Parabéns! Você ganhou! 🎉")
+else:
+    print(f"Você perdeu. A palavra era: {palavra_secreta}")
 
 # ============================================
 # PESSOA 4 — Jogar de novo
