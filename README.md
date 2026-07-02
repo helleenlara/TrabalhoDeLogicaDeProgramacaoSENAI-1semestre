@@ -29,12 +29,12 @@ Desenvolver um jogo da forca funcional em Python como projeto prático da discip
 ## Como executar
 
 1. Ter o Python instalado no computador (versão 3 ou superior)
-2. Baixar o arquivo `forca.py`
+2. Baixar o arquivo `JogoDaForca.py`
 3. Abrir o terminal na pasta onde o arquivo está
 4. Executar o comando:
 
 ```
-python forca.py
+python JogoDaForca.py
 ```
 
 ---
