@@ -1,124 +1,217 @@
+# ============================================
 # SENAI BAHIA - Dendezeiros
 # Curso: Técnico em Desenvolvimento de Sistemas
 # Disciplina: Lógica de Programação
 # Docente: Lucas Almeida
 # Turma: 103513 | Data: 06/07/2026
-# Grupo: Ana Beatriz Bispo, Lara Hellen Marques, Micaela Oliveira , Rafaela Lembrança
+# Grupo: Ana Beatriz Bispo, Lara Hellen Marques,
+#        Micaela Oliveira, Rafaela Lembrança
+# ============================================
 
 
-# ----------JOGO DA FORCA----------
-
+# Importa o módulo de sorteio do Python
 import random
 
-palavras = ['borboleta', 'chocolate', 'computador', 'cachorro', 'floresta', 'montanha', 'guitarra', 'celular', 'planeta', 'futebol', 'cozinha', 'viagem', 'oceano', 'monitor', 'diamante']
-
-palavra_secreta = random.choice(palavras)
-
-# ============================================
-# PESSOA 4 — Exibição: criação do progresso e das listas
-# ============================================
-
-# Cria a lista de progresso com um _ para cada letra da palavra_secreta
-# Ex: se a palavra tem 4 letras → ['_', '_', '_', '_']
-
-
-# Cria a lista de letras usadas, começa vazia
-# (vai guardar todas as letras que o jogador já tentou)
-
-
-
-# ============================================
-# PESSOA 4 — Função: atualizar o progresso
-# ============================================
-
-# Define a função que coloca a letra no lugar certo do progresso
-# quando o jogador acerta
-# Recebe: a palavra secreta, a letra acertada e a lista de progresso
-# Não retorna nada — ela altera a lista diretamente
-
-    # Percorre cada posição da palavra
-        # Se a letra nessa posição for igual à letra acertada,
-        # substitui o _ pelo letra no progresso
-
+# Dicionário com categorias de palavras
+# Cada categoria tem sua própria lista de palavras
+categorias = {
+    "1": {
+        "nome": "Tecnologia",
+        "palavras": [
+            "python", "computador", "teclado", "monitor", "internet",
+            "programa", "variavel", "funcao", "lista", "loop",
+            "codigo", "terminal", "arquivo", "sistema", "software"
+        ]
+    },
+    "2": {
+        "nome": "Escola",
+        "palavras": [
+            "caderno", "caneta", "mochila", "professor", "disciplina",
+            "turma", "prova", "nota", "aula", "intervalo",
+            "biblioteca", "quadro", "borracha", "lapis", "apostila"
+        ]
+    },
+    "3": {
+        "nome": "Animais",
+        "palavras": [
+            "cachorro", "gato", "papagaio", "tartaruga", "hamster",
+            "coelho", "peixe", "cobra", "lagarto", "passaro",
+            "elefante", "girafa", "macaco", "pinguim", "golfinho"
+        ]
+    }
+}
 
 
-# ============================================
-# PESSOA 4 — Função: exibir o estado do jogo
-# ============================================
+# Desenhos da forca — cada index é um estado do boneco
+# index 0 = nenhum erro, index 6 = boneco completo (perdeu)
+forca = [
+    r"""
+  +---+
+  |   |
+      |
+      |
+      |
+      |
+==========""",
+    r"""
+  +---+
+  |   |
+  O   |
+      |
+      |
+      |
+==========""",
+    r"""
+  +---+
+  |   |
+  O   |
+  |   |
+      |
+      |
+==========""",
+    r"""
+  +---+
+  |   |
+  O   |
+ /|   |
+      |
+      |
+==========""",
+    r"""
+  +---+
+  |   |
+  O   |
+ /|\  |
+      |
+      |
+==========""",
+    r"""
+  +---+
+  |   |
+  O   |
+ /|\  |
+ /    |
+      |
+==========""",
+    r"""
+  +---+
+  |   |
+  O   |
+ /|\  |
+ / \  |
+      |
+=========="""]
 
-# Define a função que mostra tudo que o jogador precisa ver
-# a cada rodada: a palavra com os _ e letras descobertas,
-# as letras erradas já tentadas e as tentativas restantes
-# Recebe: progresso, letras_usadas, tentativas_restantes
 
-    # Mostra uma linha separadora para organizar visualmente
-
-    # Mostra a palavra com as letras descobertas e _ nos lugares ocultos
-    # (use " ".join(progresso) para separar os caracteres com espaço)
-
-    # Mostra quantas tentativas ainda restam
-
-    # Se já houver letras usadas, mostra a lista em ordem alfabética
-
-    # Fecha com outra linha separadora
+# Função que exibe o desenho da forca de acordo com os erros cometidos
+def exibir_forca(erros):
+    print(forca[erros])
 
 
-
-# ============================================
-# PESSOA 4 — Mensagem de boas-vindas
-# ============================================
-
-# Mostra o título do jogo e uma mensagem de boas-vindas para o jogador
-# (essa parte roda uma vez só, antes do loop começar)
+# Função que coloca a letra no lugar certo do progresso quando o jogador acerta
+def atualizar_progresso(palavra, letra, progresso):
+    for i in range(len(palavra)):
+        if palavra[i] == letra:
+            progresso[i] = letra
 
 
+# Função que exibe o estado atual do jogo a cada rodada
+def exibir_jogo(progresso, letras_usadas, tentativas_restantes):
+    # Calcula quantos erros foram cometidos para mostrar o desenho certo
+    erros = 6 - tentativas_restantes
+    exibir_forca(erros)
+    print("Palavra: " + " ".join(progresso))
+    print("Tentativas restantes:", tentativas_restantes)
+    if letras_usadas:
+        print("Letras usadas:", ", ".join(sorted(letras_usadas)))
+    print("=" * 40)
 
-# ============================================
-# PESSOA 2 — Configuração do loop
-# ============================================
 
-max_tentativas = 6
-tentativas_restantes = max_tentativas
+# Função que mostra o menu de categorias e retorna a escolhida pelo jogador
+def escolher_categoria():
+    print("\nEscolha uma categoria:")
+    print("1 - Tecnologia")
+    print("2 - Escola")
+    print("3 - Animais")
 
-while tentativas_restantes > 0 and "_" in progresso:
+    # Fica pedindo até o jogador digitar uma opção válida
+    while True:
+        escolha = input("\nDigite o número da categoria: ")
+        if escolha in categorias:
+            return categorias[escolha]
+        print("Opção inválida! Digite 1, 2 ou 3.")
 
+
+# Função principal que roda uma partida completa do jogo
+def jogar():
+    # Mensagem de boas-vindas exibida no início de cada partida
+    print("\n" + "=" * 40)
+    print("    Bem-vindas ao Jogo da Forca!")
+    print("=" * 40)
+
+    # Jogador escolhe a categoria
+    categoria = escolher_categoria()
+
+    # Sorteia uma palavra aleatória da categoria escolhida
+    palavra_secreta = random.choice(categoria["palavras"])
+
+    # Cria o progresso com um _ para cada letra da palavra sorteada
+    progresso = ["_"] * len(palavra_secreta)
+
+    # Lista de letras usadas, começa vazia
+    letras_usadas = []
+
+    # Avisa a categoria e quantas letras tem a palavra
+    print(f"\nCategoria: {categoria['nome']}")
+    print(f"A palavra tem {len(palavra_secreta)} letras. Boa sorte!\n")
+
+    # Número máximo de erros permitidos
+    max_tentativas = 6
+    tentativas_restantes = max_tentativas
+
+    # Loop principal — roda enquanto ainda há tentativas e letras ocultas
+    while tentativas_restantes > 0 and "_" in progresso:
+
+        # Exibe o estado atual do jogo
+        exibir_jogo(progresso, letras_usadas, tentativas_restantes)
+
+        # Pede que o jogador digite uma letra
+        letra = input("Digite uma letra: ").lower()
+
+        # Validação 1: verifica se digitou exatamente uma letra válida
+        if len(letra) != 1 or not letra.isalpha():
+            print("Digite apenas uma letra!")
+
+        # Validação 2: verifica se a letra já foi tentada antes
+        elif letra in letras_usadas:
+            print("Você já usou essa letra! Tente outra.")
+
+        # Letra válida e nova: processa normalmente
+        else:
+            letras_usadas.append(letra)
+            if letra in palavra_secreta:
+                print("Boa! Essa letra está na palavra!")
+                atualizar_progresso(palavra_secreta, letra, progresso)
+            else:
+                print("Essa letra não está na palavra.")
+                tentativas_restantes -= 1
+
+    # Exibe o estado final antes de mostrar o resultado
     exibir_jogo(progresso, letras_usadas, tentativas_restantes)
 
-    letra = input("Digite uma letra: ").lower()
-
-    # ---- PESSOA 3 ----
-    # Chama a função que exibe o estado atual do jogo
-
-    if len(letra) != 1 or not letra.isalpha():
-        print("Digite apenas uma letra!")
-
-    elif letra in letras_usadas:
-        print("Você já usou essa letra! Tente outra.")
-
+    # Verifica o resultado depois que o loop encerrar
+    if "_" not in progresso:
+        print("Parabéns! Você ganhou! 🎉")
     else:
-        letras_usadas.append(letra)
-        if letra in palavra_secreta:
-            print("Boa! Essa letra está na palavra!")
-            atualizar_progresso(palavra_secreta, letra, progresso)  # Pessoa 4
-        else:
-            print("Essa letra não está na palavra.")
-            tentativas_restantes -= 1
+        print("Você perdeu. A palavra era:", palavra_secreta.upper())
 
-# ---- PESSOA 2 ----           
- 
-if "_" not in progresso:
-    print("Parabéns! Você ganhou! 🎉")
-else:
-    print(f"Você perdeu. A palavra era: {palavra_secreta}")
+    # Pergunta se quer jogar de novo e reinicia o jogo se quiser
+    jogar_de_novo = input("\nQuer jogar de novo? (s/n): ").lower()
+    if jogar_de_novo == "s":
+        jogar()
+    else:
+        print("\nObrigada por jogar! Até a próxima. 👋")
 
-# ============================================
-# PESSOA 4 — Jogar de novo
-# ============================================
 
-# Pergunta se o jogador quer jogar de novo (s/n)
-
-    # Se a resposta for "s":
-    # (o grupo combina aqui como vai reiniciar o jogo)
-
-    # Se a resposta for "n":
-    # Mostra uma mensagem de despedida
+# Inicia o jogo
+jogar()
